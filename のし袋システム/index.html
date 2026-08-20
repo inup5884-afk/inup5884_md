@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>のし袋システム</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Yuji+Syuku&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container no-print">
+        <!-- 左側：コントロールパネル -->
+        <aside class="control-panel glass-panel">
+            <h1 class="app-title">のし袋システム</h1>
+            
+            <div class="mode-switch-container">
+                <label class="mode-switch">
+                    <input type="radio" name="input-mode" value="batch" checked>
+                    <span>一括モード(全共通)</span>
+                </label>
+                <label class="mode-switch">
+                    <input type="radio" name="input-mode" value="individual">
+                    <span>個別モード(1枚ずつ)</span>
+                </label>
+            </div>
+            
+            <div class="slip-tabs" id="slip-tabs" style="display: none;">
+                <button class="slip-tab active" data-index="0">1枚目</button>
+                <button class="slip-tab" data-index="1">2枚目</button>
+                <button class="slip-tab" data-index="2">3枚目</button>
+                <button class="slip-tab" data-index="3">4枚目</button>
+                <button class="slip-tab" data-index="4">5枚目</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="top-text">表書き (上段)</label>
+                <div class="columns-input">
+                    <input type="text" id="top-text" list="top-text-presets" value="御祝" placeholder="例: 御祝, 御霊前" style="flex: 1;">
+                    <datalist id="top-text-presets">
+                        <option value="御祝"></option>
+                        <option value="寿"></option>
+                        <option value="御見舞"></option>
+                        <option value="御霊前"></option>
+                        <option value="御仏前"></option>
+                        <option value="御香典"></option>
+                        <option value="志"></option>
+                        <option value="寸志"></option>
+                    </datalist>
+                </div>
+                <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+                    <label for="top-font-size" style="font-size: 0.85rem; font-weight: normal; color: var(--text-main);">文字サイズ (スライダー調整)</label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="range" id="top-font-size" min="10" max="60" value="22" style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 2px;">
+                            <input type="number" id="top-font-size-val" min="10" max="60" step="1" style="width: 50px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">pt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>名入れ (下段) - 最大3列</label>
+                <div class="columns-input" style="align-items: flex-start; gap: 12px; margin-bottom: 8px;">
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                        <label style="font-size: 0.75rem; text-align: center;">3列目(左)</label>
+                        <input type="text" id="bottom-col3" placeholder="名前など">
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字サイズ</div>
+                        <input type="range" id="bottom-fs3" min="10" max="60" value="22" title="文字サイズ" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-fs3-val" min="10" max="60" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">pt</span>
+                        </div>
+
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">上下位置 (個別)</div>
+                        <input type="range" id="bottom-pos3" min="-50" max="50" value="0" title="上下位置" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" step="0.1" min="-5" max="5" id="bottom-pos3-val" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                        </div>
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字間隔</div>
+                        <input type="range" id="bottom-ls3" min="0" max="30" value="2" title="文字間隔" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-ls3-val" min="0" max="30" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">px</span>
+                        </div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                        <label style="font-size: 0.75rem; text-align: center;">2列目(中央)</label>
+                        <input type="text" id="bottom-col2" value="親和会" placeholder="役職など">
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字サイズ</div>
+                        <input type="range" id="bottom-fs2" min="10" max="60" value="22" title="文字サイズ" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-fs2-val" min="10" max="60" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">pt</span>
+                        </div>
+
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">上下位置 (個別)</div>
+                        <input type="range" id="bottom-pos2" min="-50" max="50" value="0" title="上下位置" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" step="0.1" min="-5" max="5" id="bottom-pos2-val" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                        </div>
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字間隔</div>
+                        <input type="range" id="bottom-ls2" min="0" max="30" value="2" title="文字間隔" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-ls2-val" min="0" max="30" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">px</span>
+                        </div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                        <label style="font-size: 0.75rem; text-align: center;">1列目(右)</label>
+                        <input type="text" id="bottom-col1" placeholder="会社名など">
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字サイズ</div>
+                        <input type="range" id="bottom-fs1" min="10" max="60" value="22" title="文字サイズ" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-fs1-val" min="10" max="60" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">pt</span>
+                        </div>
+
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">上下位置 (個別)</div>
+                        <input type="range" id="bottom-pos1" min="-50" max="50" value="0" title="上下位置" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" step="0.1" min="-5" max="5" id="bottom-pos1-val" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                        </div>
+                        
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; text-align: center;">文字間隔</div>
+                        <input type="range" id="bottom-ls1" min="0" max="30" value="2" title="文字間隔" style="width: 100%;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 2px;">
+                            <input type="number" id="bottom-ls1-val" min="0" max="30" step="1" style="width: 44px; text-align: right; font-weight: bold; padding: 2px;">
+                            <span style="font-size: 0.85rem; font-weight: bold;">px</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="bottom-size-auto" checked>
+                    <label for="bottom-size-auto" style="font-weight: normal; font-size: 0.85rem; color: var(--text-main); margin: 0; padding: 0;">自動調整（チェックを外すとスライダー有効）</label>
+                </div>
+                <div style="margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="match-top-size">
+                    <label for="match-top-size" style="font-weight: normal; font-size: 0.85rem; color: var(--text-main); margin: 0; padding: 0;">表書き(上)と同じサイズにする</label>
+                </div>
+                <div style="margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="align-top-checkbox">
+                    <label for="align-top-checkbox" style="font-weight: normal; font-size: 0.85rem; color: var(--text-main); margin: 0; padding: 0;">名前を「上揃え」にする（通常は下揃え）</label>
+                </div>
+                <small class="help-text">※未入力の列は無視され、自動で中央揃えになります。</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="font-select">書体 (フォント)</label>
+                <select id="font-select">
+                    <option value="'HG行書体', 'HGP行書体', 'Yuji Syuku', serif">HG行書体 (PC内蔵優先) - 慶事向き・流麗</option>
+                    <option value="'HG正楷書体-PRO', 'Noto Serif JP', serif">HG正楷書体-PRO (PC内蔵優先) - 弔事向き・端正</option>
+                    <option value="'JDL-Gyousho', 'HG行書体', serif">JDL行書 (PC内蔵) - 毛筆感の強い行書</option>
+                    <option value="'JDL-Kaisho', 'HG正楷書体-PRO', serif">JDL楷書 (PC内蔵) - 毛筆感の強い楷書</option>
+                    <option value="'HG教科書体', 'HGP教科書体', serif">HG教科書体 (PC内蔵) - 万能・読みやすい</option>
+                    <option value="'HG明朝B', 'HGP明朝B', serif">HG明朝体B (PC内蔵) - 格式高い明朝</option>
+                    <option value="'Yu Mincho', serif">游明朝 (PC内蔵) - 上品な明朝</option>
+                    <option value="'Yuji Syuku', serif">毛筆風 (Webフォント Yuji Syuku)</option>
+                    <option value="'Noto Serif JP', serif">明朝体 (Webフォント Noto Serif)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="top-pos">表書き 位置調整 (上から)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="range" id="top-pos" min="0" max="100" value="15" style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="number" step="0.1" min="0" max="10" id="top-pos-val" style="width: 50px; text-align: right; font-weight: bold; padding: 2px;">
+                        <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bottom-pos">名入れ 位置調整 (下から)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="range" id="bottom-pos" min="0" max="150" value="60" style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="number" step="0.1" min="0" max="15" id="bottom-pos-val" style="width: 50px; text-align: right; font-weight: bold; padding: 2px;">
+                        <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="slip-height">袋に合わせた調整: 短冊の縦サイズ(高さ)</label>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="range" id="slip-height" min="150" max="240" value="185" style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 2px;">
+                        <input type="number" step="0.1" min="15" max="24" id="slip-height-val" style="width: 50px; text-align: right; font-weight: bold; padding: 2px;">
+                        <span style="font-size: 0.85rem; font-weight: bold;">cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 16px; display: flex; align-items: center; gap: 8px; justify-content: center; background: rgba(167, 139, 84, 0.1); padding: 8px; border-radius: 8px;">
+                <input type="checkbox" id="save-default-check">
+                <label for="save-default-check" style="font-weight: bold; font-size: 0.85rem; color: var(--accent-color); margin: 0; padding: 0; cursor: pointer;">現在の内容を初期設定として記憶する</label>
+            </div>
+
+            <button id="print-btn" class="print-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                A4サイズで印刷する
+            </button>
+        </aside>
+
+        <!-- 右側：プレビューエリア -->
+        <main class="preview-area" id="preview-area">
+            <!-- transform: scale() によってフィットさせる -->
+            <div id="preview-wrapper" class="preview-wrapper">
+                <div id="sheet-preview" class="sheet-container">
+                    <!-- app.jsが5枚の短冊を注入します -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 印刷用DOM (ブラウザのPrint時のみ表示される) -->
+    <div id="print-container" class="print-only">
+        <div id="sheet-print" class="sheet-container">
+            <!-- app.jsが同じ内容を注入します -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
